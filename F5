@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+ 
+const int INF = (int)10e6;
+
+int main() {
+	int n; 
+	do {
+		cin >> n;
+	} while (n<1||n>100);
+
+	vector < vector <int> > d;
+	vector <int> tmp;
+	int temp;
+	for (int i = 0; i < n; i++)
+	{
+		tmp.clear();
+		for (int j = 0; j < n; j++)
+		{
+			cin >> temp;
+			//if (temp == 0) temp = INF;
+			tmp.push_back(temp);
+		}
+		d.push_back(tmp);
+    }
+
+
+	for (int k=0; k<n; ++k)
+		for (int i=0; i<n; ++i)
+			for (int j=0; j<n; ++j)
+			{
+				if (d[i][j] == 0 && d[i][k] + d[k][j] > 1)
+					d[i][j] = 1;
+			}
+	
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			cout << d[i][j] << " ";
+		}
+		cout << endl;
+    }
+	
+    
+}
