@@ -1,0 +1,102 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+ 
+const int INF = (int)10e9;
+
+int main() {
+	int n; 
+	int m;
+	int s = 0; 
+	
+	do {
+		cin >> n;
+	} while (n<1||n>100);
+
+	int f = n - 1;
+
+	if (s == f) 
+	{
+		cout << "-1";
+		return 0;
+	}
+
+	vector < vector < pair<int,int> > > g;
+	vector < pair<int,int> > var2 (n);
+	pair <int, int> var1;
+
+	for (int i = 0; i < n; i++)
+	{
+		var2.clear();
+		for (int j = 0; j < n; j++)
+		{
+			var1.first = j;
+			var1.second = -1;
+			var2.push_back(var1);
+		}
+		g.push_back(var2);
+    }
+
+
+	vector <int> costs;
+	pair <int, int> tempRoad;
+	int tempint;
+
+	for (int i = 0; i < n; i++)
+	{
+		cin >> tempint;
+		costs.push_back(tempint);
+	}
+
+	do {
+		cin >> m;
+		if (m < 1)	
+		{
+			cout << "-1";
+			return 0;
+		}
+	} while (m<1);
+
+	for (int i = 0; i < m; i++)
+	{
+		cin >> tempRoad.first >> tempRoad.second;
+		g[tempRoad.first-1][tempRoad.second-1].second = costs[tempRoad.first-1];
+		g[tempRoad.second-1][tempRoad.first-1].second = costs[tempRoad.second-1];
+	}
+
+ 
+	vector<int> d (n, INF),  p (n);
+	d[s] = 0;
+
+	vector<bool> used (n, false);
+
+	for (int i=0; i<n; ++i) {
+		int v = -1;
+		for (int j=0; j<n; ++j)
+			if (!used[j] && (v == -1 || d[j] < d[v]))
+				v = j;
+		if (d[v] == INF)
+			break;
+		used[v] = true;
+ 
+		for (size_t j=0; j < g[v].size(); ++j) 
+		{
+			if (g[v][j].second == -1) continue;
+			
+			int to = g[v][j].first;
+			int len = g[v][j].second;
+			if (d[v] + len < d[to]) {
+				d[to] = d[v] + len;
+				p[to] = v;
+			}
+		}
+	}
+
+
+	if (d[f] < INF) 
+		cout << d[f] << endl;
+	else 
+		cout << "-1" << endl;
+    
+}
