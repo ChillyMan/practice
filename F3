@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+ 
+const int INF = (int)10e6;
+
+int main() {
+	int n;
+	do {
+		cin >> n;
+	} while (n<1||n>50);
+
+
+	vector < vector <int> > d;
+	vector <int> tmp;
+	int temp;
+	for (int i = 0; i < n; i++)
+	{
+		tmp.clear();
+		for (int j = 0; j < n; j++)
+		{
+			cin >> temp;
+			tmp.push_back(temp);
+		}
+		d.push_back(tmp);
+    }
+
+
+	for (int k=0; k<n; ++k)
+		for (int i=0; i<n; ++i)
+			for (int j=0; j<n; ++j)
+				d[i][j] = min (d[i][j], d[i][k] + d[k][j]);
+	
+	int min = INF;
+
+	for (int i=0; i<n; i++)
+		if (d[i][i] < 0)
+		{
+			cout << "-1";
+			return 0;
+		}
+
+	for (int i=0; i<n; i++)
+			for (int j=0; j<n; j++)
+				if (i != j)
+					if (d[i][j] < min) min = d[i][j];
+	
+	cout << min << endl;	
+    
+}
