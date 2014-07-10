@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int INF = (int)10e6;
+
+int main() {
+	int n;
+	int m;
+	do {
+		cin >> n >> m;
+	} while (n<1||n>100||m<0||m>(n*(n-1)/2));
+
+	if (m==0)
+	{
+		cout << "0";
+		return 0;
+	}
+
+	vector<int> podvect (n, INF);
+	vector<vector<int>> d (n, podvect);
+	pair <int, int> tempRoad;
+	int length;
+
+	for (int i = 0; i < m; i++)
+	{
+		cin >> tempRoad.first >> tempRoad.second >> length;
+		d[tempRoad.first-1][tempRoad.second-1] = length;
+		d[tempRoad.second-1][tempRoad.first-1] = length;
+	}
+
+	for (int k=0; k<n; ++k)
+		for (int i=0; i<n; ++i)
+			for (int j=0; j<n; ++j)
+				if (d[i][k] < INF && d[k][j] < INF)
+					d[i][j] = min (d[i][j], d[i][k] + d[k][j]);
+
+
+	int max = 0;
+
+	for (int i=0; i<n; i++)
+		for (int j=0; j<n; j++)
+			if (i!=j)
+				if (d[i][j]<INF)
+					if (d[i][j] > max) max = d[i][j];
+
+	cout << max;
+
+}
