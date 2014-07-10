@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int INF = (int)10e6;
+
+int main() {
+	int n;
+	int m;
+	do {
+		cin >> n >> m;
+	} while (n<1||n>100||m<0||m>(n*(n-1)/2));
+	
+	vector <int> main;
+	vector<int> podvect (n, INF);
+	vector<vector<int>> d (n, podvect);
+	pair <int, int> tempRoad;
+	int length;
+	vector <int> maxis;
+
+	for (int i = 0; i < m; i++)
+	{
+		cin >> tempRoad.first >> tempRoad.second >> length;
+		d[tempRoad.first-1][tempRoad.second-1] = length;
+		d[tempRoad.second-1][tempRoad.first-1] = length;
+	}
+
+	for (int k=0; k<n; ++k)
+		for (int i=0; i<n; ++i)
+			for (int j=0; j<n; ++j)
+					d[i][j] = min (d[i][j], d[i][k] + d[k][j]);
+
+	cout << endl;
+
+	for (int i = 0; i < n; i++)
+    {
+        int mmax = 0;
+		for (int j = 0; j < n; j++)
+        {
+            if (i!=j)
+				mmax = max(mmax, d[i][j]);
+        }
+		main.push_back(mmax);
+	}
+
+	int minofmax = INF;
+	
+	for (auto it = main.begin(); it!=main.end(); it++)
+	{
+		minofmax = min (*it, minofmax);
+	}
+
+	auto it = find (main.begin(), main.end(), minofmax);
+	auto pos = it - main.begin() + 1;
+
+	cout << pos;
+
+}
