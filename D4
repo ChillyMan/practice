@@ -1,0 +1,122 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#define s 0
+#define INF 10000000
+
+using namespace std;
+
+int n;
+int m;
+int otvet = 0;
+
+
+vector < vector < pair<int,int> > > g;
+
+
+bool isEnoughTime (int cups, vector<vector<int>> maxCups)
+{
+	vector<int> d (n, INF),  p (n);
+	d[s] = 0;
+
+	vector<bool> used (n, false);
+
+	for (int i=0; i<n; ++i) {
+		int v = -1;
+		for (int j=0; j<n; ++j)
+			if (!used[j] && (v == -1 || d[j] < d[v]))
+				v = j;
+		if (d[v] == INF)
+			break;
+		used[v] = true;
+ 
+		for (size_t j=0; j < g[v].size(); ++j) 
+		{
+			if (g[v][j].second == -1) continue;
+			if (maxCups[v][j] < cups) continue;
+			
+			int to = g[v][j].first;
+			int len = g[v][j].second;
+			if (d[v] + len < d[to]) {
+				d[to] = d[v] + len;
+				p[to] = v;
+			}
+		}
+	}
+
+	if (d[n-1] > 1440) return false;
+	return true;
+}
+
+void BinarySearch(vector <int> A, vector<vector<int>> maxCups, int &otvet)
+{
+	int left=0, right=A.size()-1, mid;
+	while (left<=right)
+	{
+		mid=left+(right-left)/2;
+		if (isEnoughTime(A[mid], maxCups))
+		{
+			otvet = A[mid];
+			left=mid+1;
+		}
+		else
+			right=mid-1;
+	}
+}
+
+int main() {
+	
+	vector < pair<int,int> > var2 (n);
+	pair <int, int> var1;
+
+	cin >> n >> m;
+
+	if (n == 1) 
+	{
+		cout << "10000000";
+		return 0;
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		var2.clear();
+		for (int j = 0; j < n; j++)
+		{
+			var1.first = j;
+			var1.second = -1;
+			var2.push_back(var1);
+		}
+		g.push_back(var2);
+    }
+
+	pair <int, int> tempRoad;
+	int tempTime;
+	double tempWeight;
+	int nextWeight;
+	set <int> maxCupsSort;
+	vector <int> maxCupsSortV;
+	vector<vector<int>> maxCups (n, vector<int> (n, -1));
+
+	for (int i = 0; i < m; i++)
+	{
+		cin >> tempRoad.first >> tempRoad.second >> tempTime >> tempWeight;
+		nextWeight = (int)((tempWeight-3000000)/100);
+		if (nextWeight > 0)
+		{
+			maxCups[tempRoad.first-1][tempRoad.second-1] = nextWeight;
+			maxCups[tempRoad.second-1][tempRoad.first-1] = nextWeight;
+			maxCupsSort.insert(nextWeight);
+		}
+		g[tempRoad.first-1][tempRoad.second-1].second = tempTime;
+		g[tempRoad.second-1][tempRoad.first-1].second = tempTime;
+	}
+
+	for (auto it = maxCupsSort.begin(); it != maxCupsSort.end() ; it++) 
+	{
+		maxCupsSortV.push_back(*it);
+	}
+
+	BinarySearch(maxCupsSortV, maxCups, otvet);
+
+	cout << otvet;
+}
